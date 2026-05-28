@@ -427,21 +427,50 @@ body.theme-kids .container #game-screen {
 
 .menu-buttons button {
   width: 100%;
-  padding: 14px 26px;
-  font-size: 18px;
-  font-weight: 700;
-  border-radius: 16px;
+  padding: 16px 26px;
+  font-size: 19px;
+  font-weight: 800;
+  border-radius: 20px;
   border: none;
   cursor: pointer;
-  background: rgba(255, 255, 255, 0.9);
-  color: #1e3c72;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Oyna Butonu */
+.menu-buttons button:nth-child(1) {
+  background: linear-gradient(135deg, #FF6B6B, #FF8E8B);
+  box-shadow: 0 6px 0 #D32F2F, 0 15px 20px rgba(211, 47, 47, 0.4);
+}
+
+/* Eşleştirme Butonu */
+.menu-buttons button:nth-child(2) {
+  background: linear-gradient(135deg, #4FACFE, #00F2FE);
+  box-shadow: 0 6px 0 #0277BD, 0 15px 20px rgba(2, 119, 189, 0.4);
+}
+
+/* Sesli Komut Butonu */
+.menu-buttons button:nth-child(3) {
+  background: linear-gradient(135deg, #43E97B, #38F9D7);
+  box-shadow: 0 6px 0 #2E7D32, 0 15px 20px rgba(46, 125, 50, 0.4);
+}
+
+/* Ayarlar Butonu */
+.menu-buttons button:nth-child(4) {
+  background: linear-gradient(135deg, #A18CD1, #FBC2EB);
+  box-shadow: 0 6px 0 #6A1B9A, 0 15px 20px rgba(106, 27, 154, 0.4);
 }
 
 .menu-buttons button:hover {
-  transform: translateY(-3px) scale(1.03);
-  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  transform: translateY(-4px) scale(1.03);
+}
+
+.menu-buttons button:active {
+  transform: translateY(4px) scale(0.98);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.1), 0 5px 10px rgba(0,0,0,0.2) !important;
 }
 
 /* ===== ANİMASYON ===== */

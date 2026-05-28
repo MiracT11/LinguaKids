@@ -14,6 +14,9 @@ let musicInterval = null;
 let matchingTotal = 3;
 let matchingCorrect = 0;
 
+let revealedHints = []; // İpucu ile açılan harflerin indekslerini tutar
+
+
 /* =========================
    KELİME ÇEVİRİ SÖZLÜĞÜ
 ========================= */
@@ -26,7 +29,34 @@ const TURKISH_DICT = {
   "orange": "Portakal",
   "grape": "Üzüm",
   "pineapple": "Ananas",
-  "elephant": "Fil"
+  "elephant": "Fil",
+  "car": "Araba",
+  "tree": "Ağaç",
+  "ball": "Top",
+  "tiger": "Kaplan",
+  "train": "Tren",
+  "bread": "Ekmek",
+  "bird": "Kuş",
+  "fish": "Balık",
+  "sun": "Güneş",
+  "moon": "Ay",
+  "star": "Yıldız",
+  "water": "Su",
+  "milk": "Süt",
+  "window": "Pencere",
+  "door": "Kapı",
+  "chair": "Sandalye",
+  "table": "Masa",
+  "pencil": "Kalem",
+  "book": "Kitap",
+  "shoe": "Ayakkabı",
+  "teacher": "Öğretmen",
+  "student": "Öğrenci",
+  "doctor": "Doktor",
+  "hospital": "Hastane",
+  "computer": "Bilgisayar",
+  "airplane": "Uçak",
+  "library": "Kütüphane"
 };
 
 /* =========================
@@ -112,7 +142,7 @@ async function loadUser() {
 ========================= */
 async function loadWords() {
   const res = await fetch(
-    `${API_URL}/words/random?user_id=${USER_ID}&limit=5`
+    `${API_URL}/words/random?user_id=${USER_ID}&limit=5&require_image=true`
   );
   words = await res.json();
   nextWord();
@@ -125,7 +155,7 @@ function maskWord(word) {
   return word
     .split("")
     .map((letter, index) =>
-      index % 2 === 0 ? letter : "_"
+      (index % 2 === 0 || revealedHints.includes(index)) ? letter : "_"
     )
     .join(" ");
 }
@@ -142,6 +172,13 @@ function nextWord() {
 
   feedback.innerText = "";
   input.value = "";
+  revealedHints = []; // Her kelimede ipuçlarını sıfırla
+
+  const hintText = document.getElementById("hintText");
+  if (hintText) {
+    hintText.style.display = "none";
+    hintText.innerText = "";
+  }
 
   if (words.length === 0) {
     wordEl.innerText = "🎉 Tebrikler!\nBu turu bitirdin!";
@@ -165,6 +202,40 @@ function nextWord() {
     img.onerror = null;
     img.src = API_URL + "/assets/default.jpg";
   };
+}
+
+/* =========================
+   İPUCU SİSTEMİ
+========================= */
+function showHint() {
+  if (!currentWord) return;
+  
+  const wordLength = currentWord.word.length;
+  const missingIndices = [];
+  
+  // Eksik harflerin indekslerini bul
+  for (let i = 0; i < wordLength; i++) {
+    if (i % 2 !== 0 && !revealedHints.includes(i)) {
+      missingIndices.push(i);
+    }
+  }
+
+  const hintText = document.getElementById("hintText");
+
+  if (missingIndices.length > 0) {
+    // İlk bulduğumuz eksik harfi açıyoruz
+    revealedHints.push(missingIndices[0]);
+    
+    // Kelimenin ekrandaki halini güncelliyoruz
+    const wordEl = document.getElementById("word");
+    wordEl.innerText = maskWord(currentWord.word);
+    
+    hintText.innerText = "💡 Bir harf açıldı!";
+    hintText.style.display = "block";
+  } else {
+    hintText.innerText = "💡 Tüm eksik harfler zaten açıldı!";
+    hintText.style.display = "block";
+  }
 }
 
 /* =========================
@@ -482,6 +553,7 @@ window.startMatching = startMatching;
 window.startVoiceMode = startVoiceMode;
 window.startListening = startListening;
 window.playWordAudio = playWordAudio;
+window.showHint = showHint;
 
 /* =========================
    İLK YÜKLEME

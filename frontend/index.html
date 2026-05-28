@@ -62,7 +62,10 @@
         <input type="text" id="answerInput" placeholder="Cevabı yaz..." />
         <button type="button" id="submitBtn">Tamam</button>
       </div>
-
+      <div style="text-align: center; margin-top: 10px;">
+        <button type="button" id="hintBtn" onclick="showHint()" style="background-color: #ffb74d; color: white; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: transform 0.2s;">💡 İpucu Al</button>
+        <p id="hintText" style="display: none; font-size: 15px; font-weight: bold; color: #d84315; margin-top: 8px; text-shadow: 1px 1px 2px rgba(255,255,255,0.8);"></p>
+      </div>
 
       <button id="restartBtn" onclick="restartGame()" style="display:none;">
         🔁 Yeni Tur Başla

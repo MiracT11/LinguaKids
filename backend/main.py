@@ -1,20 +1,14 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
+import os
+import random
+
 from database import engine, SessionLocal
 import models
-from models import User
-from schemas import UserCreate, UserResponse
 from models import User, Word, Progress
 from schemas import UserCreate, UserResponse, WordCreate, WordResponse, ProgressCreate, ProgressResponse
-import random
-from fastapi import HTTPException
-from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import and_
-import random
-from fastapi.staticfiles import StaticFiles
-import os
-
-
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -115,11 +109,8 @@ def get_words_by_level(level: int, db: Session = Depends(get_db)):
 
 
 
-
-import random
-
 @app.get("/words/random", response_model=list[WordResponse])
-def get_random_words(user_id: int, limit: int = 5, db: Session = Depends(get_db)):
+def get_random_words(user_id: int, limit: int = 5, require_image: bool = False, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -142,6 +133,15 @@ def get_random_words(user_id: int, limit: int = 5, db: Session = Depends(get_db)
         )
         .all()
     )
+
+    if require_image:
+        filtered_words = []
+        for w in words:
+            word_name = w.word.lower().replace(" ", "_")
+            img_path = os.path.join(assets_path, "words", f"{word_name}.jpg")
+            if os.path.exists(img_path):
+                filtered_words.append(w)
+        words = filtered_words
 
     if not words:
         return []
